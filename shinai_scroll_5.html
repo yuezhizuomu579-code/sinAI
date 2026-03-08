@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>親愛 — shinai</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#02030a;
+  --text:#c8d8ff;
+  --muted:#2a3560;
+  --accent:#5588ff;
+  --gold:#ffcc66;
+  --green:#44ffaa;
+}
+
+html{ scroll-behavior: smooth; }
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+}
+
+/* ===== FIXED BG CANVAS ===== */
+#bgCanvas{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+/* ===== PARALLAX LAYERS ===== */
+.parallax-wrap{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.plx{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0.12;
+  will-change:transform;
+}
+
+/* ===== SECTIONS ===== */
+section{
+  position:relative;
+  z-index:10;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== HERO ===== */
+#hero{
+  flex-direction:column;
+  text-align:center;
+  padding:0 24px;
+}
+
+.hero-title{
+  font-family:'DotGothic16',monospace;
+  font-size:clamp(64px,12vw,140px);
+  color:#fff;
+  letter-spacing:0.2em;
+  line-height:1;
+  opacity:0;
+  transform:translateY(40px);
+  animation: heroIn 1.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;
+  text-shadow:
+    0 0 20px #5588ff44,
+    0 0 60px #5588ff22,
+    0 0 120px #5588ff11;
+}
+
+.hero-sub{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:0.4em;
+  margin-top:16px;
+  opacity:0;
+  animation: heroIn 1s ease 0.8s forwards;
+}
+
+.hero-scroll{
+  position:absolute;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'DotGothic16',monospace;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:0.3em;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes heroIn{
+  to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes float{
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(-8px);}
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal{
+  opacity:0;
+  transform:translateY(48px);
+  transition:opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+}
+
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.reveal-left{
+  opacity:0;
+  transform:translateX(-60px);
+  transition:opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+
+.reveal-right{
+  opacity:0;
+  transform:translateX(60px);
+  transition:opacity 0.9s cubic-bezier(0.22,1,0.36,1), transform 0.9s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+
+/* ===== CONCEPT SECTION ===== */
+#concept{
+  padding:80px 40px;
+}
+
+.concept-inner{
+  max-width:900px;
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+  align-items:center;
+}
+
+.concept-text h2{
+  font-family:'DotGothic16',monospace;
+  font-size:32px;
+  color:#fff;
+  letter-spacing:0.15em;
+  margin-bottom:24px;
+  line-height:1.3;
+}
+
+.concept-text p{
+  font-size:15px;
+  line-height:2.1;
+  color:#8899cc;
+}
+
+/* network canvas */
+#networkCanvas{
+  width:100%;
+  aspect-ratio:1;
+  border-radius:4px;
+}
+
+/* ===== LIFE SECTION ===== */
+#life{
+  padding:80px 40px;
+  flex-direction:column;
+}
+
+.life-title{
+  font-family:'DotGothic16',monospace;
+  font-size:28px;
+  color:#fff;
+  letter-spacing:0.2em;
+  margin-bottom:60px;
+  text-align:center;
+}
+
+.life-grid{
+  max-width:900px;
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.life-card{
+  border:1px solid #0d1428;
+  padding:28px 24px;
+  background:rgba(255,255,255,0.02);
+  backdrop-filter:blur(10px);
+  transition:border-color 0.3s, transform 0.3s;
+  cursor:default;
+}
+
+.life-card:hover{
+  border-color:#1a2a50;
+  transform:translateY(-4px);
+}
+
+.life-card-icon{
+  font-family:'DotGothic16',monospace;
+  font-size:28px;
+  margin-bottom:16px;
+  display:block;
+}
+
+.life-card-name{
+  font-family:'DotGothic16',monospace;
+  font-size:14px;
+  color:var(--accent);
+  letter-spacing:0.15em;
+  margin-bottom:10px;
+}
+
+.life-card-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.9;
+}
+
+/* count-up number */
+.big-num{
+  font-family:'DotGothic16',monospace;
+  font-size:48px;
+  color:var(--green);
+  display:block;
+  margin-bottom:8px;
+  text-shadow:0 0 20px #44ffaa44;
+}
+
+/* ===== DATA VIZ SECTION ===== */
+#data{
+  padding:80px 40px;
+  flex-direction:column;
+}
+
+.data-title{
+  font-family:'DotGothic16',monospace;
+  font-size:28px;
+  color:#fff;
+  letter-spacing:0.2em;
+  margin-bottom:60px;
+  text-align:center;
+}
+
+.data-inner{
+  max-width:900px;
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+}
+
+.chart-wrap{
+  border:1px solid #0d1428;
+  padding:24px;
+  background:rgba(255,255,255,0.02);
+}
+
+.chart-label{
+  font-family:'DotGothic16',monospace;
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:0.2em;
+  margin-bottom:20px;
+}
+
+/* bar chart */
+.bar-chart{ display:flex; flex-direction:column; gap:10px; }
+
+.bar-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:11px;
+}
+
+.bar-label{ color:var(--muted); width:48px; flex-shrink:0; font-family:'DotGothic16',monospace; font-size:9px; }
+
+.bar-track{
+  flex:1;
+  height:6px;
+  background:#060c1a;
+  position:relative;
+  overflow:hidden;
+}
+
+.bar-fill{
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:0%;
+  transition:width 1.5s cubic-bezier(0.22,1,0.36,1);
+}
+
+.bar-val{
+  font-family:'DotGothic16',monospace;
+  font-size:9px;
+  color:var(--muted);
+  width:28px;
+  text-align:right;
+}
+
+/* radial canvas */
+#radialCanvas{ display:block; margin:0 auto; }
+
+/* ===== SNS SECTION ===== */
+#sns{
+  padding:80px 40px;
+  flex-direction:column;
+  align-items:center;
+}
+
+.sns-title{
+  font-family:'DotGothic16',monospace;
+  font-size:28px;
+  color:#fff;
+  letter-spacing:0.2em;
+  margin-bottom:40px;
+  text-align:center;
+}
+
+.sns-wrap{
+  max-width:520px;
+  width:100%;
+}
+
+.compose-box{
+  border:1px solid #0d1428;
+  padding:20px;
+  background:rgba(255,255,255,0.02);
+  margin-bottom:24px;
+}
+
+.compose-label{
+  font-family:'DotGothic16',monospace;
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:0.2em;
+  margin-bottom:10px;
+}
+
+textarea{
+  width:100%;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:var(--text);
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:14px;
+  line-height:1.8;
+  resize:none;
+  caret-color:var(--accent);
+}
+
+textarea::placeholder{ color:#1a2a50; }
+
+.compose-footer{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid #0d1428;
+}
+
+.send-btn{
+  font-family:'DotGothic16',monospace;
+  font-size:10px;
+  background:none;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  padding:8px 18px;
+  cursor:pointer;
+  letter-spacing:0.15em;
+  transition:all 0.2s;
+}
+
+.send-btn:hover{
+  background:rgba(85,136,255,0.1);
+  box-shadow:0 0 16px rgba(85,136,255,0.2);
+}
+
+.feed{ display:flex; flex-direction:column; gap:10px; }
+
+.post{
+  border:1px solid #080f20;
+  padding:16px 18px;
+  background:rgba(255,255,255,0.015);
+  animation:postIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  transition:border-color 0.2s;
+}
+
+.post:hover{ border-color:#0d1428; }
+
+@keyframes postIn{
+  from{opacity:0;transform:translateY(-10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.post-meta{
+  font-family:'DotGothic16',monospace;
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:0.1em;
+  margin-bottom:8px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.post-dot{ width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0.5; }
+
+.post-body{ font-size:13px; line-height:1.9; color:#8899cc; }
+
+/* ===== FOOTER ===== */
+footer{
+  position:relative;
+  z-index:10;
+  text-align:center;
+  padding:60px 24px 80px;
+  border-top:1px solid #0a0f20;
+}
+
+footer .f-logo{
+  font-family:'DotGothic16',monospace;
+  font-size:32px;
+  color:var(--accent);
+  letter-spacing:0.3em;
+  text-shadow:0 0 30px #5588ff33;
+  margin-bottom:12px;
+}
+
+footer p{ font-size:11px; color:var(--muted); letter-spacing:0.2em; }
+
+/* ===== SEA ===== */
+#seaCanvas{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:220px;
+  z-index:2;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<!-- BG PARTICLE CANVAS -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- PARALLAX BLOBS -->
+<div class="parallax-wrap" id="plxWrap">
+  <div class="plx" id="p1" style="width:600px;height:600px;background:#2244aa;top:-100px;left:-150px;"></div>
+  <div class="plx" id="p2" style="width:400px;height:400px;background:#442288;top:30%;right:-100px;"></div>
+  <div class="plx" id="p3" style="width:500px;height:500px;background:#114422;top:70%;left:20%;"></div>
+  <div class="plx" id="p4" style="width:300px;height:300px;background:#553311;bottom:10%;right:15%;"></div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="hero-title">親愛</div>
+  <div class="hero-sub">SHINAI — 宇宙際 SNS — 生命が棲む場所</div>
+  <div class="hero-scroll">↓ SCROLL</div>
+</section>
+
+<!-- ===== CONCEPT ===== -->
+<section id="concept">
+  <div class="concept-inner">
+    <div class="concept-text reveal-left">
+      <h2>空気が<br>生きている</h2>
+      <p>
+        ここは普通のSNSじゃない。<br>
+        渡り鳥が飛び、蛍が光り、<br>
+        クラゲが漂う宇宙空間。<br><br>
+        生き物たちが織りなす空気の中に、<br>
+        あなたの言葉を置いていく。
+      </p>
+    </div>
+    <canvas id="networkCanvas" width="400" height="400" class="reveal-right"></canvas>
+  </div>
+</section>
+
+<!-- ===== LIFE FORMS ===== -->
+<section id="life">
+  <div class="life-title reveal">生命体 — LIFE FORMS</div>
+  <div class="life-grid">
+    <div class="life-card reveal" style="transition-delay:0s">
+      <span class="life-card-icon">🐦</span>
+      <div class="life-card-name">渡り鳥</div>
+      <span class="big-num" data-target="18">0</span>
+      <div class="life-card-desc">風に乗って群れで飛ぶ。方向を変えながら宇宙を横断する。</div>
+    </div>
+    <div class="life-card reveal" style="transition-delay:0.1s">
+      <span class="life-card-icon">✨</span>
+      <div class="life-card-name">蛍</div>
+      <span class="big-num" data-target="30">0</span>
+      <div class="life-card-desc">パルスしながら漂う光。近づくと名前を教えてくれる。</div>
+    </div>
+    <div class="life-card reveal" style="transition-delay:0.2s">
+      <span class="life-card-icon">🪼</span>
+      <div class="life-card-name">宇宙クラゲ</div>
+      <span class="big-num" data-target="7">0</span>
+      <div class="life-card-desc">触手を揺らしながらゆっくり上昇。最も古い生命体。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DATA VIZ ===== -->
+<section id="data">
+  <div class="data-title reveal">宇宙の記録 — COSMOS DATA</div>
+  <div class="data-inner">
+    <div class="chart-wrap reveal-left">
+      <div class="chart-label">// 生命活動 FREQ</div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+    <div class="chart-wrap reveal-right">
+      <div class="chart-label">// 軌道分布 ORBIT</div>
+      <canvas id="radialCanvas" width="240" height="240"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SNS ===== -->
+<section id="sns">
+  <div class="sns-title reveal">言葉を流す</div>
+  <div class="sns-wrap">
+    <div class="compose-box reveal">
+      <div class="compose-label">// TRANSMISSION</div>
+      <textarea id="ta" rows="3" placeholder="今日のこと、宇宙に置いていって…"></textarea>
+      <div class="compose-footer">
+        <button class="send-btn" onclick="doPost()">SEND ▶</button>
+      </div>
+    </div>
+    <div class="feed" id="feed"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">親愛</div>
+  <p>宇宙際 SNS — 生命と言葉が共存する場所</p>
+</footer>
+
+<!-- 海 -->
+<canvas id="seaCanvas"></canvas>
+
+<script>
+// ============================================================
+// BG PARTICLE SYSTEM
+// ============================================================
+const bg = document.getElementById('bgCanvas');
+const bc = bg.getContext('2d');
+let BW, BH;
+
+function bgResize(){
+  BW = bg.width = window.innerWidth;
+  BH = bg.height = window.innerHeight;
+}
+bgResize();
+window.addEventListener('resize', bgResize);
+
+// stars — 4種類: 普通・大きめ・色付き・十字キラキラ
+const STAR_COLORS = ['#ffffff','#cce0ff','#ffeedd','#ddeeff','#fffacc','#ffccee'];
+const STARS = Array.from({length:500}, ()=>{
+  const type = Math.random();
+  return {
+    x: Math.random(),
+    y: Math.random(),
+    r: type>0.97 ? 2.5+Math.random()*1.5   // 超大
+      : type>0.88 ? 1.4+Math.random()*1.0   // 大
+      : type>0.6  ? 0.8+Math.random()*0.6   // 中
+      : 0.3+Math.random()*0.4,              // 小
+    baseA: 0.3+Math.random()*0.7,
+    sp: Math.random()*0.04+0.008,
+    sp2: Math.random()*0.02+0.003,          // 第2波
+    ph: Math.random()*Math.PI*2,
+    ph2: Math.random()*Math.PI*2,
+    color: STAR_COLORS[Math.floor(Math.random()*STAR_COLORS.length)],
+    cross: type>0.93,                       // 十字光芒
+    burst: type>0.97,                       // 大爆発キラキラ
+    burstTimer: Math.random()*300,          // ランダムタイミングで光る
+  };
+});
+
+// floating particles
+const PARTICLES = Array.from({length:60}, ()=>({
+  x: Math.random()*window.innerWidth,
+  y: Math.random()*window.innerHeight,
+  vx: (Math.random()-0.5)*0.3,
+  vy: (Math.random()-0.5)*0.15 - 0.1,
+  r: Math.random()*2+0.5,
+  a: Math.random()*0.4+0.1,
+  color: ['#5588ff','#44ffaa','#ffcc66','#ff66aa'][Math.floor(Math.random()*4)],
+  ph: Math.random()*Math.PI*2,
+}));
+
+// connection lines between nearby particles
+let bgT = 0;
+
+function renderBg(){
+  bc.clearRect(0,0,BW,BH);
+
+  // deep bg
+  bc.fillStyle='#02030a';
+  bc.fillRect(0,0,BW,BH);
+
+  // stars — キラキラ瞬き
+  STARS.forEach(s=>{
+    const sx = s.x*BW, sy = s.y*BH;
+
+    // 2重サイン波で複雑な瞬き
+    const twinkle = 0.5
+      + 0.35*Math.sin(bgT*s.sp  + s.ph)
+      + 0.15*Math.sin(bgT*s.sp2 + s.ph2);
+    const a = s.baseA * Math.max(0.05, twinkle);
+
+    // バースト（たまに急激に明るくなる）
+    s.burstTimer--;
+    const isBursting = s.burst && s.burstTimer < 18;
+    if(s.burstTimer < 0) s.burstTimer = 200+Math.random()*400;
+    const burstMul = isBursting ? 1+(18-Math.max(0,s.burstTimer))/18*3 : 1;
+    const finalA = Math.min(1, a * burstMul);
+
+    // グロー（大きい星＆バースト中）
+    if(s.r > 1.2 || isBursting){
+      const glowR = s.r * (isBursting ? 10 : 5);
+      const g = bc.createRadialGradient(sx,sy,0,sx,sy,glowR);
+      g.addColorStop(0, s.color + Math.floor(finalA*180).toString(16).padStart(2,'0'));
+      g.addColorStop(1, 'transparent');
+      bc.globalAlpha = finalA * 0.6;
+      bc.fillStyle = g;
+      bc.beginPath();
+      bc.arc(sx, sy, glowR, 0, Math.PI*2);
+      bc.fill();
+    }
+
+    // 十字光芒（クロス星）
+    if(s.cross || isBursting){
+      const len = s.r * (isBursting ? 18 : 10);
+      bc.globalAlpha = finalA * 0.5;
+      bc.strokeStyle = s.color;
+      bc.lineWidth = 0.5;
+      // 水平
+      bc.beginPath();
+      bc.moveTo(sx-len, sy); bc.lineTo(sx+len, sy);
+      bc.stroke();
+      // 垂直
+      bc.beginPath();
+      bc.moveTo(sx, sy-len); bc.lineTo(sx, sy+len);
+      bc.stroke();
+      // 斜め（バースト時のみ）
+      if(isBursting){
+        const dlen = len * 0.6;
+        bc.globalAlpha = finalA * 0.3;
+        bc.beginPath(); bc.moveTo(sx-dlen,sy-dlen); bc.lineTo(sx+dlen,sy+dlen); bc.stroke();
+        bc.beginPath(); bc.moveTo(sx+dlen,sy-dlen); bc.lineTo(sx-dlen,sy+dlen); bc.stroke();
+      }
+    }
+
+    // コア
+    bc.globalAlpha = finalA;
+    bc.fillStyle = s.color;
+    bc.beginPath();
+    bc.arc(sx, sy, s.r * (isBursting ? 1.8 : 1), 0, Math.PI*2);
+    bc.fill();
+  });
+
+  // particles + connections
+  PARTICLES.forEach(p=>{
+    p.x += p.vx;
+    p.y += p.vy;
+    if(p.x<0) p.x=BW; if(p.x>BW) p.x=0;
+    if(p.y<0) p.y=BH; if(p.y>BH) p.y=0;
+
+    // connections
+    PARTICLES.forEach(q=>{
+      const d = Math.hypot(p.x-q.x, p.y-q.y);
+      if(d<120 && d>0){
+        bc.globalAlpha = (1-d/120)*0.06;
+        bc.strokeStyle = p.color;
+        bc.lineWidth = 0.5;
+        bc.beginPath();
+        bc.moveTo(p.x, p.y);
+        bc.lineTo(q.x, q.y);
+        bc.stroke();
+      }
+    });
+
+    // dot
+    bc.globalAlpha = p.a*(0.7+0.3*Math.sin(bgT*0.02+p.ph));
+    bc.fillStyle = p.color;
+    bc.beginPath();
+    bc.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    bc.fill();
+  });
+
+  bc.globalAlpha = 1;
+  bgT++;
+  requestAnimationFrame(renderBg);
+}
+renderBg();
+
+// ============================================================
+// PARALLAX
+// ============================================================
+window.addEventListener('scroll', ()=>{
+  const sy = window.scrollY;
+  document.getElementById('p1').style.transform = `translate(${sy*0.04}px, ${sy*0.08}px)`;
+  document.getElementById('p2').style.transform = `translate(${-sy*0.06}px, ${sy*0.05}px)`;
+  document.getElementById('p3').style.transform = `translate(${sy*0.03}px, ${-sy*0.04}px)`;
+  document.getElementById('p4').style.transform = `translate(${-sy*0.05}px, ${-sy*0.06}px)`;
+});
+
+// ============================================================
+// SCROLL REVEAL
+// ============================================================
+const revealEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // count-up
+      const num = e.target.querySelector('.big-num');
+      if(num && !num.dataset.done){
+        num.dataset.done='1';
+        countUp(num, parseInt(num.dataset.target));
+      }
+      // bar chart
+      if(e.target.id==='barChart' || e.target.closest('#barChart')){
+        triggerBars();
+      }
+    }
+  });
+},{threshold:0.15});
+revealEls.forEach(el=>observer.observe(el));
+
+// also observe chart wraps
+document.querySelectorAll('.chart-wrap').forEach(el=>{
+  const io = new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){ triggerBars(); triggerRadial(); }
+  },{threshold:0.3, once:true});
+  io.observe(el);
+});
+
+// ============================================================
+// COUNT UP
+// ============================================================
+function countUp(el, target){
+  let cur=0;
+  const step = Math.ceil(target/40);
+  const id = setInterval(()=>{
+    cur = Math.min(cur+step, target);
+    el.textContent = cur;
+    if(cur>=target) clearInterval(id);
+  },40);
+}
+
+// ============================================================
+// NETWORK CANVAS
+// ============================================================
+const nc = document.getElementById('networkCanvas');
+const nx = nc.getContext('2d');
+const NW=400, NH=400;
+let nT=0;
+
+const NODES = Array.from({length:22},()=>({
+  x: 40+Math.random()*320,
+  y: 40+Math.random()*320,
+  vx:(Math.random()-0.5)*0.4,
+  vy:(Math.random()-0.5)*0.4,
+  r: 2+Math.random()*3,
+  color:['#5588ff','#44ffaa','#ffcc66','#aa66ff'][Math.floor(Math.random()*4)],
+  ph:Math.random()*Math.PI*2,
+}));
+
+function renderNetwork(){
+  nx.fillStyle='rgba(2,3,10,0.3)';
+  nx.fillRect(0,0,NW,NH);
+
+  NODES.forEach(n=>{
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<10||n.x>NW-10) n.vx*=-1;
+    if(n.y<10||n.y>NH-10) n.vy*=-1;
+
+    NODES.forEach(m=>{
+      const d=Math.hypot(n.x-m.x,n.y-m.y);
+      if(d<90&&d>0){
+        const pulse = 0.5+0.5*Math.sin(nT*0.03+n.ph);
+        nx.globalAlpha=(1-d/90)*0.35*pulse;
+        nx.strokeStyle=n.color;
+        nx.lineWidth=0.8;
+        nx.beginPath();
+        nx.moveTo(n.x,n.y);
+        nx.lineTo(m.x,m.y);
+        nx.stroke();
+      }
+    });
+
+    const glow = nx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*4);
+    glow.addColorStop(0,n.color+'cc');
+    glow.addColorStop(1,'transparent');
+    nx.globalAlpha=0.6+0.4*Math.sin(nT*0.04+n.ph);
+    nx.fillStyle=glow;
+    nx.beginPath();
+    nx.arc(n.x,n.y,n.r*4,0,Math.PI*2);
+    nx.fill();
+
+    nx.globalAlpha=1;
+    nx.fillStyle=n.color;
+    nx.beginPath();
+    nx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    nx.fill();
+  });
+
+  nx.globalAlpha=1;
+  nT++;
+  requestAnimationFrame(renderNetwork);
+}
+renderNetwork();
+
+// ============================================================
+// BAR CHART
+// ============================================================
+const BAR_DATA = [
+  {label:'渡り鳥', val:72, color:'#5588ff'},
+  {label:'蛍',     val:88, color:'#ffcc66'},
+  {label:'クラゲ', val:45, color:'#44ffaa'},
+  {label:'蝶',     val:61, color:'#aa66ff'},
+  {label:'星魚',   val:53, color:'#ff6688'},
+];
+
+let barsTriggered=false;
+function triggerBars(){
+  if(barsTriggered) return;
+  barsTriggered=true;
+  const chart = document.getElementById('barChart');
+  chart.innerHTML='';
+  BAR_DATA.forEach(d=>{
+    const row = document.createElement('div');
+    row.className='bar-row';
+    row.innerHTML=`
+      <span class="bar-label">${d.label}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="background:${d.color};box-shadow:0 0 8px ${d.color}66;"></div>
+      </div>
+      <span class="bar-val">${d.val}</span>
+    `;
+    chart.appendChild(row);
+    setTimeout(()=>{
+      row.querySelector('.bar-fill').style.width=d.val+'%';
+    },100);
+  });
+}
+
+// ============================================================
+// RADIAL CANVAS
+// ============================================================
+const rc = document.getElementById('radialCanvas');
+const rx = rc.getContext('2d');
+let radialT=0, radialGoing=false;
+
+function triggerRadial(){
+  if(radialGoing) return;
+  radialGoing=true;
+  animateRadial();
+}
+
+const ORBIT_DATA = [
+  {label:'渡り鳥', r:90, count:5, color:'#5588ff', speed:0.008},
+  {label:'蛍',     r:70, count:8, color:'#ffcc66', speed:0.015},
+  {label:'クラゲ', r:50, count:3, color:'#44ffaa', speed:0.005},
+  {label:'蝶',     r:30, count:4, color:'#aa66ff', speed:0.012},
+];
+
+function animateRadial(){
+  rx.fillStyle='rgba(2,3,10,0.25)';
+  rx.fillRect(0,0,240,240);
+  const cx2=120, cy2=120;
+
+  // orbits
+  ORBIT_DATA.forEach(o=>{
+    rx.globalAlpha=0.08;
+    rx.strokeStyle=o.color;
+    rx.lineWidth=0.5;
+    rx.beginPath();
+    rx.arc(cx2,cy2,o.r,0,Math.PI*2);
+    rx.stroke();
+
+    // dots on orbit
+    for(let i=0;i<o.count;i++){
+      const angle = radialT*o.speed + (i/o.count)*Math.PI*2;
+      const x=cx2+Math.cos(angle)*o.r;
+      const y=cy2+Math.sin(angle)*o.r;
+      const pulse=0.6+0.4*Math.sin(radialT*0.05+i);
+      rx.globalAlpha=pulse;
+      rx.fillStyle=o.color;
+      rx.beginPath();
+      rx.arc(x,y,2,0,Math.PI*2);
+      rx.fill();
+    }
+  });
+
+  // center
+  const cg=rx.createRadialGradient(cx2,cy2,0,cx2,cy2,12);
+  cg.addColorStop(0,'#ffffff');
+  cg.addColorStop(1,'transparent');
+  rx.globalAlpha=0.8;
+  rx.fillStyle=cg;
+  rx.beginPath();
+  rx.arc(cx2,cy2,12,0,Math.PI*2);
+  rx.fill();
+
+  rx.globalAlpha=1;
+  radialT++;
+  requestAnimationFrame(animateRadial);
+}
+
+// ============================================================
+// FEED
+// ============================================================
+const SEED=[
+  {t:'夜、窓を開けたら星が多かった', ts: Date.now()-1000*60*12},
+  {t:'眠れないのに布団から出られない', ts: Date.now()-1000*60*38},
+  {t:'久しぶりに手紙を書いた。送らないけど', ts: Date.now()-1000*60*60*2},
+];
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return s+'秒前';
+  if(s<3600) return Math.floor(s/60)+'分前';
+  return Math.floor(s/3600)+'時間前';
+}
+
+function makePost(text,ts,you){
+  const d=document.createElement('div');
+  d.className='post';
+  d.innerHTML=`
+    <div class="post-meta">
+      <div class="post-dot" style="${you?'background:var(--gold)':''}"></div>
+      <span>${you?'あなた':'誰か'}</span>
+      <span style="margin-left:auto;font-family:'DotGothic16',monospace;font-size:8px;">${timeAgo(ts)}</span>
+    </div>
+    <div class="post-body">${text}</div>
+  `;
+  return d;
+}
+
+function doPost(){
+  const ta=document.getElementById('ta');
+  const text=ta.value.trim();
+  if(!text) return;
+  const feed=document.getElementById('feed');
+  feed.insertBefore(makePost(text,Date.now(),true),feed.firstChild);
+  ta.value='';
+}
+
+document.getElementById('ta').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doPost();}
+});
+
+function initFeed(){
+  const feed=document.getElementById('feed');
+  SEED.forEach(p=>feed.appendChild(makePost(p.t,p.ts,false)));
+}
+initFeed();
+
+// ============================================================
+// 透ける海 — プルンプルン
+// ============================================================
+const sea = document.getElementById('seaCanvas');
+const sc = sea.getContext('2d');
+let SW, SH;
+
+function seaResize(){
+  SW = sea.width = window.innerWidth;
+  SH = sea.height = 220;
+}
+seaResize();
+window.addEventListener('resize', seaResize);
+
+let seaT = 0;
+
+// 波のレイヤー（複数重ねてプルン感を出す）
+const WAVE_LAYERS = [
+  { amp:18, freq:0.012, speed:0.022, phase:0.0,   color:[80,160,255],  alpha:0.13 },
+  { amp:14, freq:0.018, speed:0.030, phase:1.2,   color:[60,200,220],  alpha:0.10 },
+  { amp:22, freq:0.008, speed:0.015, phase:2.5,   color:[100,140,255], alpha:0.09 },
+  { amp:10, freq:0.025, speed:0.045, phase:0.7,   color:[40,220,200],  alpha:0.07 },
+  { amp:28, freq:0.005, speed:0.010, phase:3.8,   color:[80,100,220],  alpha:0.06 },
+];
+
+// 海面の光の粒
+const SEA_SPARKLES = Array.from({length:40}, ()=>({
+  x: Math.random(),
+  ph: Math.random()*Math.PI*2,
+  sp: Math.random()*0.06+0.02,
+  size: Math.random()*2.5+0.5,
+  brightness: Math.random(),
+}));
+
+function getWaveY(layer, x, t){
+  // 複数の周波数を重ねて有機的なプルン感
+  return layer.amp * Math.sin(x * layer.freq + t * layer.speed + layer.phase)
+       + layer.amp * 0.4 * Math.sin(x * layer.freq*2.3 + t * layer.speed*1.7 + layer.phase+1)
+       + layer.amp * 0.2 * Math.sin(x * layer.freq*0.5 + t * layer.speed*0.6 + layer.phase+2);
+}
+
+function renderSea(){
+  sc.clearRect(0, 0, SW, SH);
+
+  const baseY = SH * 0.38; // 海面の基準位置
+
+  WAVE_LAYERS.forEach((layer, li) => {
+    sc.beginPath();
+    sc.moveTo(0, SH);
+
+    // 波形を描く
+    for(let x = 0; x <= SW; x += 2){
+      const y = baseY + getWaveY(layer, x, seaT) + li * 6;
+      if(x === 0) sc.moveTo(x, y);
+      else sc.lineTo(x, y);
+    }
+
+    sc.lineTo(SW, SH);
+    sc.lineTo(0, SH);
+    sc.closePath();
+
+    // 透けるグラデーション塗り
+    const grad = sc.createLinearGradient(0, baseY - 30, 0, SH);
+    const [r,g,b] = layer.color;
+    grad.addColorStop(0,   `rgba(${r},${g},${b},${layer.alpha})`);
+    grad.addColorStop(0.4, `rgba(${r},${g},${b},${layer.alpha*1.4})`);
+    grad.addColorStop(1,   `rgba(${r},${g},${b},${layer.alpha*0.3})`);
+    sc.fillStyle = grad;
+    sc.fill();
+  });
+
+  // 海面のキラキラ反射
+  SEA_SPARKLES.forEach(sp => {
+    const x = sp.x * SW;
+    const waveY = baseY + getWaveY(WAVE_LAYERS[0], x, seaT);
+    const pulse = 0.5 + 0.5 * Math.sin(seaT * sp.sp + sp.ph);
+    if(pulse > 0.6){
+      const a = (pulse - 0.6) / 0.4;
+      // 小さい十字キラキラ
+      sc.globalAlpha = a * 0.7;
+      sc.strokeStyle = `rgba(180,230,255,${a})`;
+      sc.lineWidth = 0.8;
+      const sz = sp.size * (1 + a);
+      sc.beginPath(); sc.moveTo(x-sz, waveY); sc.lineTo(x+sz, waveY); sc.stroke();
+      sc.beginPath(); sc.moveTo(x, waveY-sz); sc.lineTo(x, waveY+sz); sc.stroke();
+    }
+  });
+
+  // 海面ライン（一番上の輝くライン）
+  sc.globalAlpha = 1;
+  const topLineGrad = sc.createLinearGradient(0,0,SW,0);
+  topLineGrad.addColorStop(0,   'rgba(100,200,255,0)');
+  topLineGrad.addColorStop(0.2, 'rgba(140,210,255,0.35)');
+  topLineGrad.addColorStop(0.5, 'rgba(180,230,255,0.5)');
+  topLineGrad.addColorStop(0.8, 'rgba(140,210,255,0.35)');
+  topLineGrad.addColorStop(1,   'rgba(100,200,255,0)');
+
+  sc.beginPath();
+  for(let x = 0; x <= SW; x += 2){
+    const y = baseY + getWaveY(WAVE_LAYERS[0], x, seaT) - 1;
+    if(x===0) sc.moveTo(x,y); else sc.lineTo(x,y);
+  }
+  sc.strokeStyle = topLineGrad;
+  sc.lineWidth = 1.5;
+  sc.stroke();
+
+  sc.globalAlpha = 1;
+  seaT++;
+  requestAnimationFrame(renderSea);
+}
+renderSea();
+</script>
+</body>
+</html>
